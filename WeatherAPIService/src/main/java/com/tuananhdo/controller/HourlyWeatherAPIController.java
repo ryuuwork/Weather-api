@@ -30,6 +30,7 @@ public class HourlyWeatherAPIController {
 
     private final HourlyWeatherService hourlyWeatherService;
     private final GeolocationService geolocationService;
+    //Test
     private final HourlyWeatherMapper hourlyWeatherMapper;
     private final ModelMapper mapper; //    If converted to modalmapper , test passes
 
