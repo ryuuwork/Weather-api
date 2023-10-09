@@ -12,11 +12,9 @@ import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import payload.HourlyWeatherDTO;
 import payload.LocationDTO;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -39,14 +37,10 @@ public class HourlyWeatherServiceImpl implements HourlyWeatherService {
     }
 
     @Override
-    public List<HourlyWeatherDTO> getByLocationCode(String locationCode, int currentHour) {
+    public List<HourlyWeather> getByLocationCode(String locationCode, int currentHour) {
         locationRepository.findByCode(locationCode)
                 .orElseThrow(() -> new LocationNotFoundException(locationCode));
-        List<HourlyWeather> hourlyWeathers = hourlyWeatherRepository.findByLocationCodeAndHour(locationCode, currentHour);
-        return hourlyWeathers
-                .stream()
-                .map(hourlyWeatherMapper::mapToHourlyWeatherDTO)
-                .collect(Collectors.toList());
+        return hourlyWeatherRepository.findByLocationCodeAndHour(locationCode, currentHour);
     }
 
     @Override
@@ -56,5 +50,14 @@ public class HourlyWeatherServiceImpl implements HourlyWeatherService {
                 new LocationNotFoundException(locationCode));
         hourlyWeathers.forEach(item -> item.getWeatherId().setLocation(location));
         return hourlyWeatherRepository.saveAll(hourlyWeathers);
+    }
+
+    @Override
+    public List<HourlyWeather> getByLocation(LocationDTO locationDTO, int currentHour) {
+        String countryCode = locationDTO.getCountryCode();
+        String cityName = locationDTO.getCityName();
+        Location location = locationRepository.findByCountryCodeAndCityName(countryCode, cityName)
+                .orElseThrow(() -> new LocationNotFoundException(countryCode, cityName));
+        return hourlyWeatherRepository.findByLocationCodeAndHour(location.getCode(), currentHour);
     }
 }

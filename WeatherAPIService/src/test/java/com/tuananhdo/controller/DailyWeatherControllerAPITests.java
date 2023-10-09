@@ -1,8 +1,8 @@
 package com.tuananhdo.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tuananhdo.exception.GeolocationException;
 import com.tuananhdo.exception.LocationNotFoundException;
+import com.tuananhdo.mapper.DailyWeatherMapper;
 import com.tuananhdo.service.DailyWeatherService;
 import com.tuananhdo.service.GeolocationService;
 import org.junit.jupiter.api.Test;
@@ -29,10 +29,9 @@ public class DailyWeatherControllerAPITests {
 
     @Autowired
     private MockMvc mockMvc;
-    @Autowired
-    private ObjectMapper objectMapper;
     @MockBean private DailyWeatherService dailyWeatherService;
     @MockBean private GeolocationService geolocationService;
+    @MockBean private DailyWeatherMapper dailyWeatherMapper;
 
     @Test
     public void testGetByIPAddressShouldReturn400BadRequestBecauseGeolocationException() throws Exception {

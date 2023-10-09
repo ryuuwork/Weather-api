@@ -7,10 +7,8 @@ import com.tuananhdo.exception.LocationNotFoundException;
 import com.tuananhdo.mapper.HourlyWeatherMapper;
 import com.tuananhdo.service.GeolocationService;
 import com.tuananhdo.service.HourlyWeatherService;
-import com.tuananhdo.utils.CommonUtility;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -30,9 +28,7 @@ public class HourlyWeatherAPIController {
 
     private final HourlyWeatherService hourlyWeatherService;
     private final GeolocationService geolocationService;
-    //Test
     private final HourlyWeatherMapper hourlyWeatherMapper;
-    private final ModelMapper mapper; //    If converted to modalmapper , test passes
 
     public List<HourlyWeather> mapToHourlyWeatherList(List<HourlyWeatherDTO> hourlyWeatherDTOS) {
         return hourlyWeatherDTOS.stream()
@@ -43,10 +39,11 @@ public class HourlyWeatherAPIController {
     @GetMapping
     public ResponseEntity<?> getHourlyWeatherByIPAddress(HttpServletRequest request) {
         try {
-            String ipAddress = CommonUtility.getIPAddress(request);
+//            String ipAddress = CommonUtility.getIPAddress(request);
+            String ipAddress = "222.255.240.238";
             int currentHour = request.getIntHeader("X-Current-Hour");
             LocationDTO locationFromIP = geolocationService.getLocation(ipAddress);
-            List<HourlyWeather> hourlyWeathers = hourlyWeatherService.findByLocationAndHour(locationFromIP, currentHour);
+            List<HourlyWeather> hourlyWeathers = hourlyWeatherService.getByLocation(locationFromIP, currentHour);
             if (hourlyWeathers.isEmpty()) {
                 return ResponseEntity.noContent().build();
             }
@@ -61,11 +58,11 @@ public class HourlyWeatherAPIController {
     @GetMapping("/{code}")
     public ResponseEntity<?> hourlyForecastByLocationCode(@PathVariable("code") String locationCode, HttpServletRequest request) {
         int currentHour = request.getIntHeader("X-Current-Hour");
-        List<HourlyWeatherDTO> hourlyWeatherDTOS = hourlyWeatherService.getByLocationCode(locationCode, currentHour);
-        if (hourlyWeatherDTOS.isEmpty()) {
+        List<HourlyWeather> hourlyWeather = hourlyWeatherService.getByLocationCode(locationCode, currentHour);
+        if (hourlyWeather.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
-        return ResponseEntity.ok(hourlyWeatherDTOS);
+        return ResponseEntity.ok(hourlyWeatherMapper.mapHourlyWeatherListDTO(hourlyWeather));
     }
 
     @PutMapping("/{code}")

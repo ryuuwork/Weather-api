@@ -26,8 +26,6 @@ public class DailyWeatherAPIController {
     private final DailyWeatherService dailyWeatherService;
     private final GeolocationService geolocationService;
     private final DailyWeatherMapper dailyWeatherMapper;
-    private final ModelMapper mapper; //    If converted to modalmapper , test passes
-
     @GetMapping
     public ResponseEntity<?> getDailyForecastByIPAddess(HttpServletRequest request) throws GeolocationException, IOException {
         String ipAddess = CommonUtility.getIPAddress(request);

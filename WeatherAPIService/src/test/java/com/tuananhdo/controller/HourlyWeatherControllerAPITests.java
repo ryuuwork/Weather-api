@@ -4,11 +4,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tuananhdo.entity.HourlyWeather;
 import com.tuananhdo.entity.Location;
 import com.tuananhdo.exception.GeolocationException;
+import com.tuananhdo.mapper.HourlyWeatherMapper;
+import com.tuananhdo.mapper.LocationMapper;
 import com.tuananhdo.service.GeolocationService;
 import com.tuananhdo.service.HourlyWeatherService;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,8 +29,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(HourlyWeatherAPIController.class)
 public class HourlyWeatherControllerAPITests {
@@ -41,13 +41,10 @@ public class HourlyWeatherControllerAPITests {
     private MockMvc mockMvc;
     @Autowired
     private ObjectMapper objectMapper;
-    @Autowired
-    private ModelMapper modelMapper;
-
-    @MockBean
-    private HourlyWeatherService hourlyWeatherService;
-    @MockBean
-    private GeolocationService geolocationService;
+    @MockBean private HourlyWeatherMapper hourlyWeatherMapper;
+    @MockBean private HourlyWeatherService hourlyWeatherService;
+    @MockBean private GeolocationService geolocationService;
+    @MockBean private LocationMapper locationMapper;
 
     @Test
     public void testMissingXCurrentHourHeader_return400BadRequest() throws Exception {
@@ -108,27 +105,14 @@ public class HourlyWeatherControllerAPITests {
                 .precipitation(20)
                 .status("Rain2");
 
-        LocationDTO locationDTO = modelMapper.map(location, LocationDTO.class);
-
-        List<HourlyWeather> hourlyWeatherList = List.of(hourlyWeather, hourlyWeather2);
-//        List<HourlyWeatherDTO> hourlyWeatherDTOList = hourlyWeatherList
-//                .stream()
-//                .map(hourlyWeatherInList -> modelMapper.map(hourlyWeatherInList, HourlyWeatherDTO.class))
-//                .collect(Collectors.toList());
-
-        LOGGER.error("hourlyWeatherDTOList:" + hourlyWeatherList);
-
-        when(geolocationService.getLocation(Mockito.anyString()))
-                .thenReturn(locationDTO);
-
-        when(hourlyWeatherService.findByLocationAndHour(locationDTO, currentHour))
-                .thenReturn(hourlyWeatherList);
+        LocationDTO locationDTO = locationMapper.mapToLocationDTO(location);
+        when(geolocationService.getLocation(Mockito.anyString())).thenReturn(locationDTO);
+        when(hourlyWeatherService.getByLocation(locationDTO, currentHour)).thenReturn(List.of(hourlyWeather,hourlyWeather2));
 
         String expectdLocation = location.toString();
-
-        mockMvc.perform(get(END_POINT_PATH)
-                        .header(X_CURRENT_HOUR, String.valueOf(currentHour)))
+        mockMvc.perform(get(END_POINT_PATH).header(X_CURRENT_HOUR, String.valueOf(currentHour)))
                 .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(jsonPath("$.location", is(expectdLocation)))
                 .andDo(print());
     }
@@ -138,7 +122,7 @@ public class HourlyWeatherControllerAPITests {
         String requestURI = END_POINT_PATH + "/VN_DBP";
         List<HourlyWeatherDTO> hourlyWeatherDTOS = Collections.emptyList();
         String requestBody = objectMapper.writeValueAsString(hourlyWeatherDTOS);
-        mockMvc.perform(put(requestURI).contentType(MediaType.APPLICATION_JSON).content(requestBody))
+        mockMvc.perform(put(requestURI).contentType(MediaType.APPLICATION_JSON_VALUE).content(requestBody))
                 .andExpect(status().isBadRequest())
                 .andDo(print());
     }
