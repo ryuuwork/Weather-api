@@ -1,6 +1,5 @@
 package com.tuananhdo.repository;
 
-import com.tuananhdo.configurationAPI.ModalMapperConfig;
 import com.tuananhdo.entity.DailyWeather;
 import com.tuananhdo.entity.HourlyWeather;
 import com.tuananhdo.entity.Location;
@@ -30,7 +29,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @DataJpaTest
-@Import(ModalMapperConfig.class)
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Rollback(value = false)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
