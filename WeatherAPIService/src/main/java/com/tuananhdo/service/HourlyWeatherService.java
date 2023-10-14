@@ -11,6 +11,5 @@ public interface HourlyWeatherService {
 
     List<HourlyWeather> getByLocationCode(String locationCode, int currentHour);
     List<HourlyWeather> getByLocation(LocationDTO locationDTO, int currentHour);
-
     List<HourlyWeather> updateByLocationCode(String locationCode, List<HourlyWeather> hourlyWeathers);
 }

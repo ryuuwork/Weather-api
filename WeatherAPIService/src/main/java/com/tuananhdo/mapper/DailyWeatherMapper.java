@@ -16,7 +16,7 @@ public class DailyWeatherMapper {
 
     private final ModelMapper mapper;
 
-    public DailyWeatherListDTO mapDailyWeatherListDTO(List<DailyWeather> dailyWeatherList) {
+    public DailyWeatherListDTO mapToDailyWeatherListDTO(List<DailyWeather> dailyWeatherList) {
         Location location = dailyWeatherList.get(0).getDailyWeatherId().getLocation();
         DailyWeatherListDTO dailyWeatherListDTO = new DailyWeatherListDTO();
         dailyWeatherListDTO.setLocation(location.toString());
@@ -26,7 +26,7 @@ public class DailyWeatherMapper {
         return dailyWeatherListDTO;
     }
 
-    List<DailyWeather> maptoDailyWeatherList(List<DailyWeatherDTO> dailyWeatherDTOS) {
+    public List<DailyWeather> mapToDailyWeatherList(List<DailyWeatherDTO> dailyWeatherDTOS) {
         return dailyWeatherDTOS.stream()
                 .map(dailyWeatherDTO -> mapper.map(dailyWeatherDTO, DailyWeather.class))
                 .toList();

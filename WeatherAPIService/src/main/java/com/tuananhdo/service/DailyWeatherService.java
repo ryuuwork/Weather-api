@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface DailyWeatherService {
     List<DailyWeather> getByLocation(LocationDTO locationDTO);
+    List<DailyWeather> getByLocationCode(String code);
+    List<DailyWeather> updateByLocationCode(String code, List<DailyWeather> dailyWeathers);
 }

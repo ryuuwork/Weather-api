@@ -12,30 +12,24 @@ import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import payload.HourlyWeatherDTO;
 import payload.LocationDTO;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @AllArgsConstructor
 @RequestMapping("/api/v1/hourly")
+@Validated
 public class HourlyWeatherAPIController {
     private static final Logger LOGGER = LoggerFactory.getLogger(HourlyWeatherAPIController.class);
 
     private final HourlyWeatherService hourlyWeatherService;
     private final GeolocationService geolocationService;
     private final HourlyWeatherMapper hourlyWeatherMapper;
-
-    public List<HourlyWeather> mapToHourlyWeatherList(List<HourlyWeatherDTO> hourlyWeatherDTOS) {
-        return hourlyWeatherDTOS.stream()
-                .map(hourlyWeatherMapper::mapToHourlyWeather)
-                .collect(Collectors.toList());
-    }
-
     @GetMapping
     public ResponseEntity<?> getHourlyWeatherByIPAddress(HttpServletRequest request) {
         try {
@@ -72,7 +66,7 @@ public class HourlyWeatherAPIController {
             throw new BadRequestException("Hourly forecast data cannot be empty");
         }
         try {
-            List<HourlyWeather> hourlyWeatherList = mapToHourlyWeatherList(hourlyWeatherDTOS);
+            List<HourlyWeather> hourlyWeatherList = hourlyWeatherMapper.mapToHourlyWeatherList(hourlyWeatherDTOS);
             List<HourlyWeather> updateHourlyWeather = hourlyWeatherService.updateByLocationCode(locationCode, hourlyWeatherList);
             return ResponseEntity.ok(hourlyWeatherMapper.mapHourlyWeatherListDTO(updateHourlyWeather));
         } catch (LocationNotFoundException exception) {

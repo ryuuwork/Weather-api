@@ -31,7 +31,6 @@ public class LocationDTO {
     private boolean enabled;
     @JsonIgnore
     private boolean trashed;
-
     public LocationDTO(String cityName, String regionName, String countryName, String countryCode) {
         this.cityName = cityName;
         this.regionName = regionName;

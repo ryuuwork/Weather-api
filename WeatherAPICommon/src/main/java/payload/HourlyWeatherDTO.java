@@ -14,4 +14,14 @@ public class HourlyWeatherDTO {
     private int temperature;
     private int precipitation;
     private String status;
+
+    @Override
+    public String toString() {
+        return "HourlyWeatherDTO{" +
+                "hourOfDay=" + hourOfDay +
+                ", temperature=" + temperature +
+                ", precipitation=" + precipitation +
+                ", status='" + status + '\'' +
+                '}';
+    }
 }

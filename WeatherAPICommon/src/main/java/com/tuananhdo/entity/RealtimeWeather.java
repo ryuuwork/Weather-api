@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Setter
 @Getter
@@ -29,7 +30,6 @@ public class RealtimeWeather {
     @OneToOne
     @JoinColumn(name = "location_code")
     @MapsId
-    @JsonIgnore
     private Location location;
 
     public void setLocation(Location location) {
@@ -37,5 +37,46 @@ public class RealtimeWeather {
         this.location = location;
     }
 
+    public RealtimeWeather temperature(int temperature) {
+        setTemperature(temperature);
+        return this;
+    }
 
+    public RealtimeWeather humidity(int humidity) {
+        setHumidity(humidity);
+        return this;
+    }
+
+    public RealtimeWeather precipitation(int precipitation) {
+        setPrecipitation(precipitation);
+        return this;
+    }
+
+    public RealtimeWeather windSpeed(int windSpeed) {
+        setWindSpeed(windSpeed);
+        return this;
+    }
+
+    public RealtimeWeather status(String status) {
+        setStatus(status);
+        return this;
+    }
+
+    public RealtimeWeather lastUpdated(LocalDateTime date) {
+        setLastUpdated(date);
+        return this;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        RealtimeWeather that = (RealtimeWeather) o;
+        return Objects.equals(locationCode, that.locationCode);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(locationCode);
+    }
 }

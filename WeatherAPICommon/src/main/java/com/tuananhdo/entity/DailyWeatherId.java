@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 @Embeddable
 @Setter
@@ -21,4 +22,17 @@ public class DailyWeatherId implements Serializable {
     @ManyToOne
     @JoinColumn(name = "location_code")
     private Location location;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        DailyWeatherId that = (DailyWeatherId) o;
+        return dayOfMonth == that.dayOfMonth && month == that.month && Objects.equals(location, that.location);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(dayOfMonth, month, location);
+    }
 }

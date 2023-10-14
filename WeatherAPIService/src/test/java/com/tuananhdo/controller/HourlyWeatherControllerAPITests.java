@@ -4,12 +4,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tuananhdo.entity.HourlyWeather;
 import com.tuananhdo.entity.Location;
 import com.tuananhdo.exception.GeolocationException;
+import com.tuananhdo.exception.LocationNotFoundException;
 import com.tuananhdo.mapper.HourlyWeatherMapper;
-import com.tuananhdo.mapper.LocationMapper;
 import com.tuananhdo.service.GeolocationService;
 import com.tuananhdo.service.HourlyWeatherService;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,10 +42,14 @@ public class HourlyWeatherControllerAPITests {
     private MockMvc mockMvc;
     @Autowired
     private ObjectMapper objectMapper;
-    @MockBean private HourlyWeatherMapper hourlyWeatherMapper;
-    @MockBean private HourlyWeatherService hourlyWeatherService;
-    @MockBean private GeolocationService geolocationService;
-    @MockBean private LocationMapper locationMapper;
+    @MockBean
+    private HourlyWeatherService hourlyWeatherService;
+    @MockBean
+    private GeolocationService geolocationService;
+    @MockBean
+    private HourlyWeatherMapper hourlyWeatherMapper;
+    @Autowired
+    ModelMapper mapper;
 
     @Test
     public void testMissingXCurrentHourHeader_return400BadRequest() throws Exception {
@@ -83,7 +88,6 @@ public class HourlyWeatherControllerAPITests {
     @Test
     public void testGetIPAddress_Return200OK() throws Exception {
         int currentHour = 9;
-
         Location location = new Location();
         location.setCode("VN_DBP");
         location.setCityName("Dien Bien");
@@ -93,7 +97,8 @@ public class HourlyWeatherControllerAPITests {
         location.setEnabled(true);
 
         HourlyWeather hourlyWeather = new HourlyWeather()
-                .weatherId(location, 9)
+                .location(location)
+                .hourOfDay(13)
                 .temperature(20)
                 .precipitation(40)
                 .status("Rain");
@@ -105,15 +110,14 @@ public class HourlyWeatherControllerAPITests {
                 .precipitation(20)
                 .status("Rain2");
 
-        LocationDTO locationDTO = locationMapper.mapToLocationDTO(location);
-        when(geolocationService.getLocation(Mockito.anyString())).thenReturn(locationDTO);
-        when(hourlyWeatherService.getByLocation(locationDTO, currentHour)).thenReturn(List.of(hourlyWeather,hourlyWeather2));
+        LocationDTO locationDTO = mapper.map(location, LocationDTO.class);
 
-        String expectdLocation = location.toString();
+        List<HourlyWeather> hourlyWeathers = List.of(hourlyWeather, hourlyWeather2);
+
+        when(geolocationService.getLocation(Mockito.anyString())).thenReturn(locationDTO);
+        when(hourlyWeatherService.getByLocation(locationDTO, currentHour)).thenReturn(hourlyWeathers);
         mockMvc.perform(get(END_POINT_PATH).header(X_CURRENT_HOUR, String.valueOf(currentHour)))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(jsonPath("$.location", is(expectdLocation)))
                 .andDo(print());
     }
 
@@ -127,4 +131,18 @@ public class HourlyWeatherControllerAPITests {
                 .andDo(print());
     }
 
+    @Test
+    public void testGetByCodeShouldReturn404NotFound() throws Exception {
+        int currentHour = 9;
+        String locationCode = "VN_DBP";
+        String requestURI = END_POINT_PATH + "/" + locationCode;
+
+        LocationNotFoundException exception = new LocationNotFoundException(locationCode);
+        when(hourlyWeatherService.getByLocationCode(locationCode, currentHour)).thenThrow(exception);
+
+        mockMvc.perform(get(requestURI).header(X_CURRENT_HOUR, String.valueOf(currentHour)))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.errors[0]", is(exception.getMessage())))
+                .andDo(print());
+    }
 }

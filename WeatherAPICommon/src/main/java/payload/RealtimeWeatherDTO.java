@@ -1,6 +1,7 @@
 package payload;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotBlank;
@@ -15,6 +16,7 @@ import java.util.Objects;
 @Setter
 @Getter
 public class RealtimeWeatherDTO {
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private String location;
     @Range(min = -50, max = 50, message = "Temperature must be in the range of -50 to 50 Celsius degree ")
     private int temperature;

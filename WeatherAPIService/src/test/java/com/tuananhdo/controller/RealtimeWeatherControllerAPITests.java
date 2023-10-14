@@ -115,7 +115,7 @@ public class RealtimeWeatherControllerAPITests {
         realtimeWeather.setWindSpeed(60);
         realtimeWeather.setStatus("Cloudy");
 
-        RealtimeWeatherDTO realtimeWeatherDTO = modelMapper.map(realtimeWeather,RealtimeWeatherDTO.class);
+        RealtimeWeatherDTO realtimeWeatherDTO = modelMapper.map(realtimeWeather, RealtimeWeatherDTO.class);
         String bodyContent = objectMapper.writeValueAsString(realtimeWeatherDTO);
 
         mockMvc.perform(put(URL).contentType(MediaType.APPLICATION_JSON)
@@ -137,9 +137,9 @@ public class RealtimeWeatherControllerAPITests {
         realtimeWeather.setWindSpeed(60);
         realtimeWeather.setStatus("Cloudy");
 
-        RealtimeWeatherDTO realtimeWeatherDTO = modelMapper.map(realtimeWeather,RealtimeWeatherDTO.class);
+        RealtimeWeatherDTO realtimeWeatherDTO = modelMapper.map(realtimeWeather, RealtimeWeatherDTO.class);
 
-        Mockito.when(realtimeWeatherService.updateRealtimeWeather(locationCode,realtimeWeatherDTO))
+        Mockito.when(realtimeWeatherService.updateRealtimeWeather(locationCode, realtimeWeatherDTO))
                 .thenThrow(LocationNotFoundException.class);
 
         String bodyContent = objectMapper.writeValueAsString(realtimeWeatherDTO);
@@ -174,10 +174,10 @@ public class RealtimeWeatherControllerAPITests {
         realtimeWeather.setLocation(location);
         location.setRealtimeWeather(realtimeWeather);
 
-        RealtimeWeatherDTO realtimeWeatherDTO = modelMapper.map(realtimeWeather,RealtimeWeatherDTO.class);
-        LocationDTO locationDTO = modelMapper.map(location,LocationDTO.class);
+        RealtimeWeatherDTO realtimeWeatherDTO = modelMapper.map(realtimeWeather, RealtimeWeatherDTO.class);
+        LocationDTO locationDTO = modelMapper.map(location, LocationDTO.class);
 
-        Mockito.when(realtimeWeatherService.updateRealtimeWeather(locationDTO.getCode(),realtimeWeatherDTO))
+        Mockito.when(realtimeWeatherService.updateRealtimeWeather(locationDTO.getCode(), realtimeWeatherDTO))
                 .thenReturn(realtimeWeatherDTO);
 
         String bodyContent = objectMapper.writeValueAsString(realtimeWeatherDTO);
@@ -186,7 +186,7 @@ public class RealtimeWeatherControllerAPITests {
         mockMvc.perform(put(URL).contentType(MediaType.APPLICATION_JSON)
                         .content(bodyContent))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.location",is(expectLocation)))
+                .andExpect(jsonPath("$.location", is(expectLocation)))
                 .andDo(print());
     }
 }

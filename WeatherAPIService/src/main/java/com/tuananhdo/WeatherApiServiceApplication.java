@@ -2,33 +2,71 @@ package com.tuananhdo;
 
 import com.tuananhdo.entity.DailyWeather;
 import com.tuananhdo.entity.HourlyWeather;
+import com.tuananhdo.entity.Location;
+import com.tuananhdo.entity.RealtimeWeather;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import payload.DailyWeatherDTO;
+import payload.FullWeatherDTO;
 import payload.HourlyWeatherDTO;
+import payload.RealtimeWeatherDTO;
 
 @SpringBootApplication()
-    public class WeatherApiServiceApplication {
+public class WeatherApiServiceApplication {
     @Bean
     public ModelMapper mapper() {
-        ModelMapper modelMapper = new ModelMapper();
-        modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
-
-        var typeMapHourlyWeather = modelMapper.typeMap(HourlyWeather.class, HourlyWeatherDTO.class);
-        typeMapHourlyWeather.addMapping(hourlyWeather -> hourlyWeather.getWeatherId().getHourOfDay(), HourlyWeatherDTO::setHourOfDay);
-
-        var typeMapHourlyWeatherDTO = modelMapper.typeMap(HourlyWeatherDTO.class, HourlyWeather.class);
-        typeMapHourlyWeatherDTO.addMapping(HourlyWeatherDTO::getHourOfDay, (getHourlyWeatherId, value)
-                -> getHourlyWeatherId.getWeatherId().setHourOfDay(value != null ? (int) value : 0));
-
-        var typeMapDailyWeather = modelMapper.typeMap(DailyWeather.class, DailyWeatherDTO.class);
-        typeMapDailyWeather.addMapping(dailyWeather -> dailyWeather.getDailyWeatherId().getDayOfMonth(), DailyWeatherDTO::setDayOfMonth);
-        typeMapDailyWeather.addMapping(dailyWeather -> dailyWeather.getDailyWeatherId().getMonth(), DailyWeatherDTO::setMonth);
-        return modelMapper;
+        ModelMapper mapper = configureMatchingStratery();
+        configureMapping(mapper);
+        return mapper;
     }
+
+    private static ModelMapper configureMatchingStratery() {
+        ModelMapper mapper = new ModelMapper();
+        mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
+        return mapper;
+    }
+
+    private static void configureMapping(ModelMapper mapper) {
+        configureMappingForHourlyWeather(mapper);
+        configureMappingForDailyWeather(mapper);
+        configureMappingForFullWeather(mapper);
+        configureMappingForRealtimeWeather(mapper);
+    }
+
+    private static void configureMappingForRealtimeWeather(ModelMapper mapper) {
+        mapper.typeMap(RealtimeWeatherDTO.class, RealtimeWeather.class)
+                .addMappings(realtimeWeatherDTO -> realtimeWeatherDTO.skip(RealtimeWeather::setLocation));
+    }
+
+    private static void configureMappingForFullWeather(ModelMapper mapper) {
+        mapper.typeMap(Location.class, FullWeatherDTO.class)
+                .addMapping(Location::toString, FullWeatherDTO::setLocation);
+    }
+
+    private static void configureMappingForDailyWeather(ModelMapper mapper) {
+        mapper.typeMap(DailyWeather.class, DailyWeatherDTO.class)
+                .addMapping(dailyWeather -> dailyWeather.getDailyWeatherId().getDayOfMonth(), DailyWeatherDTO::setDayOfMonth)
+                .addMapping(dailyWeather -> dailyWeather.getDailyWeatherId().getMonth(), DailyWeatherDTO::setMonth);
+
+        mapper.typeMap(DailyWeatherDTO.class, DailyWeather.class)
+                .addMapping(DailyWeatherDTO::getDayOfMonth,
+                        (id, value) -> id.getDailyWeatherId().setDayOfMonth(value != null ? (int) value : 0))
+                .addMapping(DailyWeatherDTO::getMonth,
+                        (id, value) -> id.getDailyWeatherId().setMonth(value != null ? (int) value : 0));
+    }
+
+    private static void configureMappingForHourlyWeather(ModelMapper mapper) {
+        mapper.typeMap(HourlyWeather.class, HourlyWeatherDTO.class)
+                .addMapping(hourlyWeather -> hourlyWeather.getWeatherId().getHourOfDay(), HourlyWeatherDTO::setHourOfDay);
+
+        mapper.typeMap(HourlyWeatherDTO.class, HourlyWeather.class)
+                .addMapping(HourlyWeatherDTO::getHourOfDay,
+                        (id, value) -> id.getWeatherId().setHourOfDay(value != null ? (int) value : 0));
+    }
+
     public static void main(String[] args) {
         SpringApplication.run(WeatherApiServiceApplication.class, args);
     }

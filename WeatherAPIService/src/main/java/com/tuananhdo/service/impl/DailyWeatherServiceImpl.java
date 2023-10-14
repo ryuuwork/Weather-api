@@ -27,4 +27,26 @@ public class DailyWeatherServiceImpl implements DailyWeatherService {
 
         return dailyWeatherRepository.findByLocationCode(location.getCode());
     }
+
+    @Override
+    public List<DailyWeather> getByLocationCode(String code) {
+        locationRepository.findByCode(code)
+                .orElseThrow(() -> new LocationNotFoundException(code));
+        return dailyWeatherRepository.findByLocationCode(code);
+    }
+
+    @Override
+    public List<DailyWeather> updateByLocationCode(String code, List<DailyWeather> dailyWeathers) {
+        Location location = locationRepository.findByCode(code)
+                .orElseThrow(() -> new LocationNotFoundException(code));
+        dailyWeathers.forEach(dailyWeather -> dailyWeather.getDailyWeatherId()
+                .setLocation(location));
+        List<DailyWeather> dailyWeatherList = location.getDailyWeatherList();
+        List<DailyWeather> dailyWeatherToRemoved = dailyWeatherList.stream()
+                .filter(dailyWeather -> !dailyWeathers.contains(dailyWeather))
+                .map(DailyWeather::getCoppyId)
+                .toList();
+        dailyWeatherList.removeAll(dailyWeatherToRemoved);
+        return dailyWeatherRepository.saveAll(dailyWeathers);
+    }
 }

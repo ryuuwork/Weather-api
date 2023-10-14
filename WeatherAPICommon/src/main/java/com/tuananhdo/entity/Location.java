@@ -1,6 +1,5 @@
 package com.tuananhdo.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -31,16 +30,15 @@ public class Location {
     @Column(length = 64, nullable = false, unique = true)
     private String countryCode;
     private boolean enabled;
-    @JsonIgnore
     private boolean trashed;
     @OneToOne(mappedBy = "location", cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn
     private RealtimeWeather realtimeWeather;
 
-    @OneToMany(mappedBy = "weatherId.location", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "weatherId.location", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<HourlyWeather> hourlyWeatherList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "dailyWeatherId.location", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "dailyWeatherId.location", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<DailyWeather> dailyWeatherList = new ArrayList<>();
 
     public Location(String cityName, String regionName, String countryName, String countryCode) {

@@ -15,6 +15,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import payload.LocationDTO;
 
+import java.util.ArrayList;
+
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -29,9 +31,12 @@ public class DailyWeatherControllerAPITests {
 
     @Autowired
     private MockMvc mockMvc;
-    @MockBean private DailyWeatherService dailyWeatherService;
-    @MockBean private GeolocationService geolocationService;
-    @MockBean private DailyWeatherMapper dailyWeatherMapper;
+    @MockBean
+    private DailyWeatherService dailyWeatherService;
+    @MockBean
+    private GeolocationService geolocationService;
+    @MockBean
+    private DailyWeatherMapper dailyWeatherMapper;
 
     @Test
     public void testGetByIPAddressShouldReturn400BadRequestBecauseGeolocationException() throws Exception {
@@ -52,6 +57,16 @@ public class DailyWeatherControllerAPITests {
         mockMvc.perform(get(END_POINT_PATH))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.errors[0]", is(locationNotFoundException.getMessage())))
+                .andDo(print());
+    }
+
+    @Test
+    public void testGetByCodeShouldReturn204NoContent() throws Exception {
+        String code = "VN_DBPS";
+        String requestURL = END_POINT_PATH + "/" + code;
+        when(dailyWeatherService.getByLocationCode(code)).thenReturn(new ArrayList<>());
+        mockMvc.perform(get(requestURL))
+                .andExpect(status().isNoContent())
                 .andDo(print());
     }
 
