@@ -7,6 +7,7 @@ import com.tuananhdo.exception.LocationNotFoundException;
 import com.tuananhdo.mapper.HourlyWeatherMapper;
 import com.tuananhdo.service.GeolocationService;
 import com.tuananhdo.service.HourlyWeatherService;
+import com.tuananhdo.utils.CommonUtility;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
@@ -33,8 +34,7 @@ public class HourlyWeatherAPIController {
     @GetMapping
     public ResponseEntity<?> getHourlyWeatherByIPAddress(HttpServletRequest request) {
         try {
-//            String ipAddress = CommonUtility.getIPAddress(request);
-            String ipAddress = "222.255.240.238";
+            String ipAddress = CommonUtility.getIPAddress(request);
             int currentHour = request.getIntHeader("X-Current-Hour");
             LocationDTO locationFromIP = geolocationService.getLocation(ipAddress);
             List<HourlyWeather> hourlyWeathers = hourlyWeatherService.getByLocation(locationFromIP, currentHour);

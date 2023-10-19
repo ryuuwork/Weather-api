@@ -1,6 +1,5 @@
 package com.tuananhdo.entity;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,7 +22,6 @@ public class Location {
     @Column(length = 128, nullable = false)
     private String cityName;
     @Column(length = 128, nullable = false, unique = true)
-    @JsonProperty
     private String regionName;
     @Column(length = 64, nullable = false, unique = true)
     private String countryName;
@@ -64,6 +62,24 @@ public class Location {
         if (o == null || getClass() != o.getClass()) return false;
         Location location = (Location) o;
         return Objects.equals(code, location.code);
+    }
+
+    public void coppyFielsFrom(Location anotherLocation) {
+        setCountryCode(anotherLocation.getCountryCode());
+        setCountryName(anotherLocation.getCountryName());
+        setCityName(anotherLocation.getCityName());
+        setRegionName(anotherLocation.getRegionName());
+        setEnabled(anotherLocation.isEnabled());
+    }
+
+    public void coppyAllFielsFrom(Location anotherLocation) {
+        coppyFielsFrom(anotherLocation);
+        setCode(anotherLocation.getCode());
+        setTrashed(anotherLocation.isTrashed());
+    }
+
+    public void setCodee(String code) {
+        this.code = code;
     }
 
     @Override

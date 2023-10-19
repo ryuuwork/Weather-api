@@ -15,6 +15,7 @@ import java.util.Objects;
 
 @Service
 public class GeolocationServiceImpl implements GeolocationService {
+    public static final String OK_STATUS = "OK";
     private static final Logger LOGGER = LoggerFactory.getLogger(GeolocationServiceImpl.class);
     private static final String DATABASE_PATH = "/ipweatherdb/IP2LOCATION-LITE-DB3.BIN";
     private final IP2Location ip2Location = new IP2Location();
@@ -35,7 +36,8 @@ public class GeolocationServiceImpl implements GeolocationService {
     @Override
     public LocationDTO getLocation(String ipAddress) throws IOException, GeolocationException {
         IPResult ipResult = ip2Location.IPQuery(ipAddress);
-        if (!ipResult.getStatus().equals("OK")) {
+        String status = ipResult.getStatus();
+        if (!OK_STATUS.equals(status)) {
             throw new GeolocationException("Geolocation failed with status: " + ipResult.getStatus());
         }
         return new LocationDTO(ipResult.getCity(), ipResult.getRegion(), ipResult.getCountryLong(), ipResult.getCountryShort());

@@ -14,9 +14,11 @@ import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
+import payload.FullWeatherDTO;
 import payload.LocationDTO;
 
 import java.time.LocalDateTime;
@@ -29,7 +31,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(FullWeatherAPIController.class)
+//@WebMvcTest(FullWeatherAPIController.class)
+@AutoConfigureMockMvc
+@SpringBootTest
 public class FullWeatherControllerAPITests {
     private static final Logger LOGGER = LoggerFactory.getLogger(FullWeatherControllerAPITests.class);
     private static final String END_POINT_PATH = "/api/v1/full";
@@ -118,13 +122,13 @@ public class FullWeatherControllerAPITests {
                 .maxTemp(23)
                 .precipitation(22)
                 .status("Cloudy");
-
         location.setDailyWeatherList(List.of(dailyWeather, dailyWeather2));
 
+        FullWeatherDTO fullWeatherDTO = mapper.map(location,FullWeatherDTO.class);
         LocationDTO locationDTO = mapper.map(location, LocationDTO.class);
 
         when(geolocationService.getLocation(Mockito.anyString())).thenReturn(locationDTO);
-//        when(fullWeatherService.getByLocation(locationDTO)).thenReturn(locationDTO);
+        when(fullWeatherService.getByLocation(locationDTO)).thenReturn(fullWeatherDTO);
         String expectedLocation = locationDTO.toString();
         mockMvc.perform(get(END_POINT_PATH))
                 .andExpect(status().isOk())

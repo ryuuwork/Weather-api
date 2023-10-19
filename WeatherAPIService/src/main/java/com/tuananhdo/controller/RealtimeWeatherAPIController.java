@@ -42,7 +42,6 @@ public class RealtimeWeatherAPIController {
     public ResponseEntity<?> updateRealtimeWeather(@PathVariable("code") String code,
                                                    @RequestBody @Valid RealtimeWeatherDTO realtimeWeatherDTO) {
         RealtimeWeatherDTO realtimeWeather = realtimeWeatherService.updateRealtimeWeather(code, realtimeWeatherDTO);
-        LOGGER.error(String.valueOf(realtimeWeather));
         return ResponseEntity.ok(realtimeWeather);
     }
 }

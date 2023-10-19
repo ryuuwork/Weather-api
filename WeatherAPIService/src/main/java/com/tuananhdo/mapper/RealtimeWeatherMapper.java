@@ -10,10 +10,6 @@ import payload.RealtimeWeatherDTO;
 @AllArgsConstructor
 public class RealtimeWeatherMapper {
     private final ModelMapper mapper;
-    public RealtimeWeather mapToRealtimeWeather(RealtimeWeatherDTO realtimeWeatherDTO) {
-        return mapper.map(realtimeWeatherDTO, RealtimeWeather.class);
-    }
-
     public RealtimeWeatherDTO mapToRealtimeWeatherDTO(RealtimeWeather realtimeWeather) {
         return mapper.map(realtimeWeather, RealtimeWeatherDTO.class);
     }

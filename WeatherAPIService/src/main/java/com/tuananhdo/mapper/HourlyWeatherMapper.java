@@ -17,15 +17,6 @@ public class HourlyWeatherMapper {
 
     private final ModelMapper mapper;
 
-    public HourlyWeather mapToHourlyWeather(HourlyWeatherDTO hourlyWeatherDTO) {
-        return mapper.map(hourlyWeatherDTO, HourlyWeather.class);
-
-    }
-
-    public HourlyWeatherDTO mapToHourlyWeatherDTO(HourlyWeather hourlyWeather) {
-        return mapper.map(hourlyWeather, HourlyWeatherDTO.class);
-    }
-
     public List<HourlyWeather> mapToHourlyWeatherList(List<HourlyWeatherDTO> hourlyWeatherDTOS) {
         return hourlyWeatherDTOS.stream()
                 .map(hourlyWeatherDTO -> mapper.map(hourlyWeatherDTO, HourlyWeather.class))
