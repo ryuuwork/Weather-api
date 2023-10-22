@@ -20,7 +20,7 @@ import payload.HourlyWeatherDTO;
 import payload.RealtimeWeatherDTO;
 
 @SpringBootApplication()
-@PropertySource("file:${ENV_PROPERTIES_FILE}")
+@PropertySource(value = "file:${ENV_PROPERTIES_FILE}")
 public class WeatherApiServiceApplication {
     @Bean
     public ModelMapper mapper() {
@@ -74,7 +74,7 @@ public class WeatherApiServiceApplication {
     }
 
     @Bean
-    ObjectMapper objectMapper(){
+    ObjectMapper objectMapper() {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
         objectMapper.setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE);
