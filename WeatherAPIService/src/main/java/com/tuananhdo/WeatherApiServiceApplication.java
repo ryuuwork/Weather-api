@@ -13,12 +13,14 @@ import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.PropertySource;
 import payload.DailyWeatherDTO;
 import payload.FullWeatherDTO;
 import payload.HourlyWeatherDTO;
 import payload.RealtimeWeatherDTO;
 
 @SpringBootApplication()
+@PropertySource("file:${ENV_PROPERTIES_FILE}")
 public class WeatherApiServiceApplication {
     @Bean
     public ModelMapper mapper() {
