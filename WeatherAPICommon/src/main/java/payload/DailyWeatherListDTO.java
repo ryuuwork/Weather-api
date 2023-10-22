@@ -13,8 +13,4 @@ public class DailyWeatherListDTO {
     private String location;
     @JsonProperty("daily_forecast")
     private List<DailyWeatherDTO> dailyForecast = new ArrayList<>();
-
-    public void addDailyWeatherDTO(DailyWeatherDTO dailyWeatherDTO) {
-        this.dailyForecast.add(dailyWeatherDTO);
-    }
 }

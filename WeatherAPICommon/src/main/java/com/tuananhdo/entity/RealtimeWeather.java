@@ -80,13 +80,13 @@ public class RealtimeWeather {
         return Objects.hash(locationCode);
     }
 
-    public void coppyFielsFrom(RealtimeWeatherDTO anotherRealtimeDTO, Location location){
+    public void coppyFielsFrom(RealtimeWeatherDTO another, Location location){
         setLocation(location);
-        setPrecipitation(anotherRealtimeDTO.getPrecipitation());
-        setHumidity(anotherRealtimeDTO.getHumidity());
-        setTemperature(anotherRealtimeDTO.getTemperature());
-        setWindSpeed(anotherRealtimeDTO.getWindSpeed());
-        setStatus(anotherRealtimeDTO.getStatus());
+        setPrecipitation(another.getPrecipitation());
+        setHumidity(another.getHumidity());
+        setTemperature(another.getTemperature());
+        setWindSpeed(another.getWindSpeed());
+        setStatus(another.getStatus());
         setLastUpdated(LocalDateTime.now());
     }
 }
