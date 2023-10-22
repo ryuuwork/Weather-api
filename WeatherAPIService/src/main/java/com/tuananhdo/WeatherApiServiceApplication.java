@@ -1,5 +1,9 @@
 package com.tuananhdo;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.tuananhdo.entity.DailyWeather;
 import com.tuananhdo.entity.HourlyWeather;
 import com.tuananhdo.entity.Location;
@@ -65,6 +69,15 @@ public class WeatherApiServiceApplication {
         mapper.typeMap(HourlyWeatherDTO.class, HourlyWeather.class)
                 .addMapping(HourlyWeatherDTO::getHourOfDay,
                         (id, value) -> id.getWeatherId().setHourOfDay(value != null ? (int) value : 0));
+    }
+
+    @Bean
+    ObjectMapper objectMapper(){
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
+        objectMapper.setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE);
+        objectMapper.registerModule(new JavaTimeModule());
+        return objectMapper;
     }
 
     public static void main(String[] args) {

@@ -3,8 +3,9 @@ package com.tuananhdo.service.impl;
 import com.tuananhdo.entity.Location;
 import com.tuananhdo.exception.LocationNotFoundException;
 import com.tuananhdo.mapper.LocationMapper;
+import com.tuananhdo.repository.LocationRepository;
+import com.tuananhdo.service.AbstractLocationSerivce;
 import com.tuananhdo.service.LocationService;
-import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import payload.LocationDTO;
@@ -14,10 +15,13 @@ import java.util.stream.Collectors;
 
 @Service
 @Transactional
-@AllArgsConstructor
 public class LocationServiceImpl extends AbstractLocationSerivce implements LocationService {
-
     private final LocationMapper locationMapper;
+    public LocationServiceImpl(LocationRepository locationRepository, LocationMapper locationMapper) {
+        this.locationRepository = locationRepository;
+        this.locationMapper = locationMapper;
+    }
+
     @Override
     public LocationDTO addLocation(LocationDTO locationDTO) {
         Location location = locationMapper.mapToLocation(locationDTO);

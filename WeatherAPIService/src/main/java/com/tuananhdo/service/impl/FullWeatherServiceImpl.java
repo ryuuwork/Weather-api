@@ -5,8 +5,9 @@ import com.tuananhdo.entity.HourlyWeather;
 import com.tuananhdo.entity.Location;
 import com.tuananhdo.entity.RealtimeWeather;
 import com.tuananhdo.mapper.FullWeatherMapper;
+import com.tuananhdo.repository.LocationRepository;
+import com.tuananhdo.service.AbstractLocationSerivce;
 import com.tuananhdo.service.FullWeatherService;
-import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -18,10 +19,14 @@ import java.util.List;
 import java.util.Objects;
 
 @Service
-@AllArgsConstructor
 public class FullWeatherServiceImpl extends AbstractLocationSerivce implements FullWeatherService {
     private static final Logger LOGGER = LoggerFactory.getLogger(GeolocationServiceImpl.class);
     private final FullWeatherMapper fullWeatherMapper;
+
+    public FullWeatherServiceImpl(LocationRepository locationRepository, FullWeatherMapper fullWeatherMapper) {
+        this.locationRepository = locationRepository;
+        this.fullWeatherMapper = fullWeatherMapper;
+    }
 
     @Override
     public FullWeatherDTO getByLocation(LocationDTO locationDTO) {

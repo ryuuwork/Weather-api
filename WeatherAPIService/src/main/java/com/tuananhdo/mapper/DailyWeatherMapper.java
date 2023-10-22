@@ -18,11 +18,12 @@ public class DailyWeatherMapper {
 
     public DailyWeatherListDTO mapToDailyWeatherListDTO(List<DailyWeather> dailyWeatherList) {
         Location location = dailyWeatherList.get(0).getDailyWeatherId().getLocation();
+        List<DailyWeatherDTO> dailyWeatherDTOS = dailyWeatherList.stream()
+                .map(dailyWeather -> mapper.map(dailyWeather,DailyWeatherDTO.class))
+                .toList();
         DailyWeatherListDTO dailyWeatherListDTO = new DailyWeatherListDTO();
         dailyWeatherListDTO.setLocation(location.toString());
-        dailyWeatherList.forEach(dailyWeather -> {
-            dailyWeatherListDTO.addDailyWeatherDTO(mapper.map(dailyWeather, DailyWeatherDTO.class));
-        });
+        dailyWeatherListDTO.setDailyForecast(dailyWeatherDTOS);
         return dailyWeatherListDTO;
     }
 

@@ -42,7 +42,7 @@ public class FullWeatherAPIController {
     }
 
     @PutMapping("/{code}")
-    public ResponseEntity<FullWeatherDTO> updateFullWeatherByLocationCode(@PathVariable("code") String code,
+    public ResponseEntity<?> updateFullWeatherByLocationCode(@PathVariable("code") String code,
                                                                           @RequestBody @Valid FullWeatherDTO fullWeatherDTO) throws BadRequestException {
         if (fullWeatherDTO.getHourlyWeatherList().isEmpty()) {
             throw new BadRequestException("Hourly weather data cannot be empty");

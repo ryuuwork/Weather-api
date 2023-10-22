@@ -25,12 +25,11 @@ public class HourlyWeatherMapper {
 
     public HourlyWeatherListDTO mapHourlyWeatherListDTO(List<HourlyWeather> hourlyWeathers) {
         Location location = hourlyWeathers.get(0).getWeatherId().getLocation();
-        HourlyWeatherListDTO hourlyWeatherListDTO = new HourlyWeatherListDTO();
-        hourlyWeatherListDTO.setLocation(location.toString());
-
         List<HourlyWeatherDTO> weatherDTOs = hourlyWeathers.stream()
                 .map(hourlyWeather -> mapper.map(hourlyWeather, HourlyWeatherDTO.class))
                 .collect(Collectors.toList());
+        HourlyWeatherListDTO hourlyWeatherListDTO = new HourlyWeatherListDTO();
+        hourlyWeatherListDTO.setLocation(location.toString());
         hourlyWeatherListDTO.setHourlyWeatherDTOS(weatherDTOs);
         return hourlyWeatherListDTO;
     }

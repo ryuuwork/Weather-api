@@ -50,7 +50,7 @@ public class HourlyWeatherAPIController {
     }
 
     @GetMapping("/{code}")
-    public ResponseEntity<?> hourlyForecastByLocationCode(@PathVariable("code") String locationCode, HttpServletRequest request) {
+    public ResponseEntity<?> getHourlyForecastByLocationCode(@PathVariable("code") String locationCode, HttpServletRequest request) {
         int currentHour = request.getIntHeader("X-Current-Hour");
         List<HourlyWeather> hourlyWeather = hourlyWeatherService.getByLocationCode(locationCode, currentHour);
         if (hourlyWeather.isEmpty()) {

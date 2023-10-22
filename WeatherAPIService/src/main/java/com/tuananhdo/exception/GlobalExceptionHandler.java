@@ -50,7 +50,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return errorDTO;
     }
 
-    @ExceptionHandler({BadRequestException.class,GeolocationException.class})
+    @ExceptionHandler({BadRequestException.class, GeolocationException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
     public ErrorDTO handleGeolocationOrNumberFormatException(Exception exception, WebRequest request) {
@@ -72,9 +72,9 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         errorDTO.setStatus(HttpStatus.BAD_REQUEST.value());
         errorDTO.setPath(request.getDescription(false));
         List<FieldError> fieldErrors = exception.getBindingResult().getFieldErrors();
-        fieldErrors.forEach(fieldError -> {
-            errorDTO.addError(fieldError.getDefaultMessage());
-        });
+        fieldErrors.stream()
+                .map(FieldError::getDefaultMessage)
+                .forEach(errorDTO::addError);
         return new ResponseEntity<>(errorDTO, headers, status);
     }
 }

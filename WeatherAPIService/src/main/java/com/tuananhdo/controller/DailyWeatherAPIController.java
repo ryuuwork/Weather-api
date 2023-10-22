@@ -18,6 +18,7 @@ import payload.LocationDTO;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @AllArgsConstructor
@@ -52,9 +53,10 @@ public class DailyWeatherAPIController {
     @PutMapping("/{code}")
     public ResponseEntity<?> updateDailyForecastByLocationCode(@PathVariable("code") String code,
                                                                @RequestBody @Valid List<DailyWeatherDTO> dailyWeatherDTOS) throws BadRequestException {
-        if (dailyWeatherDTOS.isEmpty()) {
-            throw new BadRequestException("BAD REQUEST");
+        if (Objects.isNull(dailyWeatherDTOS) || dailyWeatherDTOS.isEmpty()) {
+            throw new BadRequestException("The daily weather no data");
         }
+
         List<DailyWeather> dailyWeatherList = dailyWeatherMapper.mapToDailyWeatherList(dailyWeatherDTOS);
         List<DailyWeather> updateDailyWeather = dailyWeatherService.updateByLocationCode(code, dailyWeatherList);
         return ResponseEntity.ok(dailyWeatherMapper.mapToDailyWeatherListDTO(updateDailyWeather));

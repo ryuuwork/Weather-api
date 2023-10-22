@@ -5,9 +5,10 @@ import com.tuananhdo.entity.RealtimeWeather;
 import com.tuananhdo.exception.LocationNotFoundException;
 import com.tuananhdo.exception.RealTimeWeatherNotFoundException;
 import com.tuananhdo.mapper.RealtimeWeatherMapper;
+import com.tuananhdo.repository.LocationRepository;
 import com.tuananhdo.repository.RealtimeWeatherRepository;
+import com.tuananhdo.service.AbstractLocationSerivce;
 import com.tuananhdo.service.RealtimeWeatherService;
-import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import payload.LocationDTO;
 import payload.RealtimeWeatherDTO;
@@ -15,10 +16,15 @@ import payload.RealtimeWeatherDTO;
 import java.util.Objects;
 
 @Service
-@AllArgsConstructor
 public class RealtimeWeatherServiceImpl extends AbstractLocationSerivce implements RealtimeWeatherService {
     private final RealtimeWeatherRepository realtimeWeatherRepository;
     private final RealtimeWeatherMapper realtimeWeatherMapper;
+
+    public RealtimeWeatherServiceImpl(LocationRepository locationRepository, RealtimeWeatherRepository realtimeWeatherRepository, RealtimeWeatherMapper realtimeWeatherMapper) {
+        this.locationRepository = locationRepository;
+        this.realtimeWeatherRepository = realtimeWeatherRepository;
+        this.realtimeWeatherMapper = realtimeWeatherMapper;
+    }
 
     @Override
     public RealtimeWeatherDTO getByLocation(LocationDTO locationDTO) {

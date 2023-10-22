@@ -3,17 +3,21 @@ package com.tuananhdo.service.impl;
 import com.tuananhdo.entity.DailyWeather;
 import com.tuananhdo.entity.Location;
 import com.tuananhdo.repository.DailyWeatherRepository;
+import com.tuananhdo.repository.LocationRepository;
+import com.tuananhdo.service.AbstractLocationSerivce;
 import com.tuananhdo.service.DailyWeatherService;
-import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import payload.LocationDTO;
 
 import java.util.List;
 
 @Service
-@AllArgsConstructor
 public class DailyWeatherServiceImpl extends AbstractLocationSerivce implements DailyWeatherService {
     private final DailyWeatherRepository dailyWeatherRepository;
+    public DailyWeatherServiceImpl(LocationRepository locationRepository, DailyWeatherRepository dailyWeatherRepository) {
+        this.locationRepository = locationRepository;
+        this.dailyWeatherRepository = dailyWeatherRepository;
+    }
 
     @Override
     public List<DailyWeather> getByLocation(LocationDTO locationDTO) {
