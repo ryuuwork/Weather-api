@@ -8,13 +8,14 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.Range;
+import org.springframework.hateoas.RepresentationModel;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Setter
 @Getter
-public class RealtimeWeatherDTO {
+public class RealtimeWeatherDTO extends RepresentationModel<RealtimeWeatherDTO> {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String location;
     @Range(min = -50, max = 50, message = "Temperature must be in the range of -50 to 50 Celsius degree ")
