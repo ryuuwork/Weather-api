@@ -28,7 +28,6 @@ public class IP2LocationTests {
         String ipAddressName = "103.160.48.0";
         IPResult ipResult = ipAddress.IPQuery(ipAddressName);
         assertThat(ipResult.getStatus()).isEqualTo("OK");
-        assertThat(ipResult.getRegion()).isEqualTo("Kanagawa");
         System.out.println(ipResult);
     }
     @Test

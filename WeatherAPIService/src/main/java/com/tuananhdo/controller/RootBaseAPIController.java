@@ -27,7 +27,7 @@ public class RootBaseAPIController {
     private RootBaseURL createRootBaseURL() throws IOException {
         RootBaseURL rootBaseURL = new RootBaseURL();
         rootBaseURL.setLocationUrl(linkTo(methodOn(LocationAPIController.class).listAllUntrashedLocations()).toString());
-        rootBaseURL.setLocationByCodeUrl(linkTo(methodOn(LocationAPIController.class).getLocation(null)).toString());
+        rootBaseURL.setLocationByCodeUrl(linkTo(methodOn(LocationAPIController.class).getLocationByCode(null)).toString());
 
         rootBaseURL.setRealtimeWeatherByIpAdressUrl(linkTo(methodOn(RealtimeWeatherAPIController.class).getRealtimeWeatherByIPAddress(null)).toString());
         rootBaseURL.setRealtimeWeatherByCodeUrl(linkTo(methodOn(RealtimeWeatherAPIController.class).getRealtimeWeatherByLocationCode(null)).toString());

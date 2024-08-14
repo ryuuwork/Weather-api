@@ -1,5 +1,6 @@
 package com.tuananhdo.exception;
 
+import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.constraints.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,6 +60,20 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         errorDTO.setStatus(HttpStatus.BAD_REQUEST.value());
         errorDTO.setPath(request.getDescription(false));
         errorDTO.addError(exception.getMessage());
+        return errorDTO;
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    public ErrorDTO handleConstraintViolationException(ConstraintViolationException exception, WebRequest request) {
+        ErrorDTO errorDTO = new ErrorDTO();
+        errorDTO.setTimestamp(LocalDateTime.now());
+        errorDTO.setStatus(HttpStatus.BAD_REQUEST.value());
+        errorDTO.setPath(request.getDescription(false));
+        exception.getConstraintViolations().forEach(constraintViolation ->
+                errorDTO.addError(constraintViolation.getPropertyPath() + ": " + constraintViolation.getMessage()));
+        LOGGER.error(exception.getMessage(), exception);
         return errorDTO;
     }
 

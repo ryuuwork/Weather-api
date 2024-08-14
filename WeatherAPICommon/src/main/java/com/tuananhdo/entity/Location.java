@@ -53,7 +53,7 @@ public class Location {
 
     @Override
     public String toString() {
-        return cityName + "," + (regionName != null ? regionName : "") + "," + countryName;
+        return  code + ": " + cityName + "," + (regionName != null ? regionName : "") + "," + countryName;
     }
 
     @Override
@@ -64,22 +64,18 @@ public class Location {
         return Objects.equals(code, location.code);
     }
 
-    public void coppyFielsFrom(Location anotherLocation) {
-        setCountryCode(anotherLocation.getCountryCode());
-        setCountryName(anotherLocation.getCountryName());
-        setCityName(anotherLocation.getCityName());
-        setRegionName(anotherLocation.getRegionName());
-        setEnabled(anotherLocation.isEnabled());
+    public void coppyFielsFrom(Location another) {
+        setCountryCode(another.getCountryCode());
+        setCountryName(another.getCountryName());
+        setCityName(another.getCityName());
+        setRegionName(another.getRegionName());
+        setEnabled(another.isEnabled());
     }
 
-    public void coppyAllFielsFrom(Location anotherLocation) {
-        coppyFielsFrom(anotherLocation);
-        setCode(anotherLocation.getCode());
-        setTrashed(anotherLocation.isTrashed());
-    }
-
-    public void setCodee(String code) {
-        this.code = code;
+    public void coppyAllFielsFrom(Location another) {
+        coppyFielsFrom(another);
+        setCode(another.getCode());
+        setTrashed(another.isTrashed());
     }
 
     @Override

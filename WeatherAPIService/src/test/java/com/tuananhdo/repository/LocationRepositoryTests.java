@@ -14,7 +14,10 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.annotation.Rollback;
 import payload.LocationDTO;
 
@@ -126,7 +129,7 @@ public class LocationRepositoryTests {
     @Test
     @Order(3)
     public void testListSuccess() {
-        List<Location> locations = locationRepository.findUntrashed();
+        List<Location> locations = locationRepository.findTrashed();
         List<LocationDTO> locationDTO = locations.stream()
                 .map(location -> mapper.map(location, LocationDTO.class))
                 .toList();
@@ -216,4 +219,37 @@ public class LocationRepositoryTests {
         Location saveLocation = locationRepository.save(location);
         assertThat(saveLocation.getDailyWeatherList()).isNotEmpty();
     }
+
+    @Test
+    public void testListFirstPage(){
+        int pageSize = 5;
+        int pageNumber = 0;
+        Pageable pageable = PageRequest.of(pageNumber,pageSize);
+        Page<Location> page = locationRepository.findTrashed(pageable);
+        assertThat(page).size().isEqualTo(pageSize);
+        page.forEach(System.out::println);
+    }
+
+    @Test
+    public void testListPageNoContent(){
+        int pageSize = 5;
+        int pageNumber = 10;
+        Pageable pageable = PageRequest.of(pageNumber,pageSize);
+        Page<Location> page = locationRepository.findTrashed(pageable);
+        assertThat(page).isEmpty();
+        page.forEach(System.out::println);
+    }
+
+    @Test
+    public void testListPageWithSort(){
+        int pageSize = 5;
+        int pageNumber = 0;
+        Sort sort = Sort.by("code").ascending();
+        Pageable pageable = PageRequest.of(pageNumber,pageSize,sort);
+        Page<Location> page = locationRepository.findTrashed(pageable);
+        assertThat(page).size().isEqualTo(pageSize);
+        page.forEach(System.out::println);
+    }
+
+
 }

@@ -24,12 +24,12 @@ import payload.RealtimeWeatherDTO;
 public class WeatherApiServiceApplication {
     @Bean
     public ModelMapper mapper() {
-        ModelMapper mapper = configureMatchingStratery();
+        ModelMapper mapper = configureMatchingStrategy();
         configureMapping(mapper);
         return mapper;
     }
 
-    private static ModelMapper configureMatchingStratery() {
+    private static ModelMapper configureMatchingStrategy() {
         ModelMapper mapper = new ModelMapper();
         mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
         return mapper;

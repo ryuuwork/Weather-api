@@ -1,18 +1,24 @@
 package payload;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.server.core.Relation;
 
 import java.util.Objects;
 
 @Setter
 @Getter
 @NoArgsConstructor
-public class LocationDTO {
+@JsonPropertyOrder({"code", "city_name", "region_name", "country_code", "country_name", "enabled"})
+@Relation(collectionRelation = "locations")
+public class LocationDTO extends CollectionModel<LocationDTO> {
     @NotBlank(message = "Location code cannot be left blank")
     @Length(min = 2, max = 12, message = "Location code must have 2-12 characters")
     private String code;
@@ -31,6 +37,16 @@ public class LocationDTO {
     private boolean enabled;
     @JsonIgnore
     private boolean trashed;
+
+
+    public LocationDTO(String code,String cityName, String regionName, String countryName, String countryCode) {
+        this.code = code;
+        this.cityName = cityName;
+        this.regionName = regionName;
+        this.countryName = countryName;
+        this.countryCode = countryCode;
+    }
+
     public LocationDTO(String cityName, String regionName, String countryName, String countryCode) {
         this.cityName = cityName;
         this.regionName = regionName;
